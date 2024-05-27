@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">MVPTestProject</string>
+    <string name="select_city">Select city</string>
+    <string name="current_weather_in">Current weather in:</string>
+    <string name="description">Description: %s</string>
+    <string name="temperature">Temperature: %s</string>
+    <string name="feels_like">Feels like: %s</string>
+    <string name="temperature_min">Temperature min: %s</string>
+    <string name="temperature_max">Temperature max: %s</string>
+
+    <string-array name="cities">
+        <item>Minsk</item>
+        <item>Berlin</item>
+        <item>London</item>
+        <item>Paris</item>
+    </string-array>
+</resources>
