@@ -2,33 +2,43 @@ package com.example.mvptestproject.presentation
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.example.mvptestproject.R
-import com.example.mvptestproject.contract.MainContract
+import com.example.mvptestproject.contract.MainView
+import com.example.mvptestproject.data.repositories.WeatherForecastRepositoryImpl
 import com.example.mvptestproject.databinding.ActivityMainBinding
 import com.example.mvptestproject.domain.models.WeatherForecast
 import dagger.hilt.android.AndroidEntryPoint
+import moxy.MvpAppCompatActivity
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), MainContract.View {
+class MainActivity : MvpAppCompatActivity(), MainView {
 
     private lateinit var binding: ActivityMainBinding
 
     @Inject
-    lateinit var presenter: MainContract.Presenter
+    lateinit var repositoryImpl: WeatherForecastRepositoryImpl
+
+    @InjectPresenter
+    lateinit var presenter: MainPresenter
+
+    @ProvidePresenter
+    fun provideMainPresenter(): MainPresenter {
+        return MainPresenter(repositoryImpl)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setUpUi()
-        setListeners()
+        presenter.onCreateView()
     }
 
-    private fun setUpUi() {
+    override fun setUpUi() {
         val cities = resources.getStringArray(R.array.cities)
         val adapter = ArrayAdapter(this, R.layout.list_item, cities)
         with(binding) {
@@ -41,7 +51,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         }
     }
 
-    private fun setListeners() {
+    override fun setListeners() {
         with(binding) {
             autoCompleteTxt.setOnItemClickListener { parent, view, position, id ->
                 val selectedItem = parent.getItemAtPosition(position).toString()
@@ -49,7 +59,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
                 if (id.toInt() == 0) {
                     dropdownMenu.clearFocus()
                 }
-                presenter.onCityClicked(selectedItem)
+                presenter.getWeatherForecast(selectedItem)
             }
         }
     }

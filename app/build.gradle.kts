@@ -62,6 +62,11 @@ dependencies {
     // hilt
     implementation("com.google.dagger:hilt-android:2.50")
     kapt("com.google.dagger:hilt-android-compiler:2.50")
+
+    // moxy
+    implementation("com.github.moxy-community:moxy:2.2.2")
+    kapt("com.github.moxy-community:moxy-compiler:2.2.2")
+    implementation("com.github.moxy-community:moxy-androidx:2.2.2")
 }
 
 kapt {

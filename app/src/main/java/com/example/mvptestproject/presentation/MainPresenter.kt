@@ -1,6 +1,6 @@
 package com.example.mvptestproject.presentation
 
-import com.example.mvptestproject.contract.MainContract
+import com.example.mvptestproject.contract.MainView
 import com.example.mvptestproject.domain.models.WeatherForecast
 import com.example.mvptestproject.domain.repository.WeatherForecastRepository
 import com.example.mvptestproject.utils.Cities
@@ -8,30 +8,31 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import moxy.InjectViewState
+import moxy.MvpPresenter
 import javax.inject.Inject
 
+@InjectViewState
 class MainPresenter @Inject constructor(
-    private val view: MainContract.View,
     private val repository: WeatherForecastRepository,
-) : MainContract.Presenter {
+) : MvpPresenter<MainView>() {
 
     private var weatherForecast: WeatherForecast? = null
 
-    override fun fetchData() {
-        weatherForecast?.let {
-            view.showLoading(false)
-            view.showData(it)
-        }
+    fun onCreateView() {
+        viewState.setUpUi()
+        viewState.setListeners()
     }
 
-    override fun onCityClicked(city: String) {
-        view.showLoading(true)
+    fun getWeatherForecast(city: String) {
+        viewState.showLoading(true)
 
         CoroutineScope(Dispatchers.IO).launch {
             updateWeatherForecastByCity(city)
 
             withContext(Dispatchers.Main) {
-                fetchData()
+                viewState.showLoading(false)
+                weatherForecast?.let { viewState.showData(it) }
             }
         }
     }
