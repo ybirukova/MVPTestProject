@@ -12,7 +12,7 @@ interface MainView : MvpView {
 
     fun setListeners()
 
-    fun showData(data: WeatherForecast)
+    fun showResult(data: WeatherForecast?)
 
     fun showLoading(isLoading: Boolean)
 }

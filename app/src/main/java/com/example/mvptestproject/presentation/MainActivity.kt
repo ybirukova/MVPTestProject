@@ -23,11 +23,11 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     lateinit var repositoryImpl: WeatherForecastRepositoryImpl
 
     @InjectPresenter
-    lateinit var presenter: MainPresenter
+    lateinit var presenter: MainPresenterImpl
 
     @ProvidePresenter
-    fun provideMainPresenter(): MainPresenter {
-        return MainPresenter(repositoryImpl)
+    fun provideMainPresenter(): MainPresenterImpl {
+        return MainPresenterImpl(repositoryImpl)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +35,8 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        presenter.onCreateView()
+        setUpUi()
+        setListeners()
     }
 
     override fun setUpUi() {
@@ -59,33 +60,33 @@ class MainActivity : MvpAppCompatActivity(), MainView {
                 if (id.toInt() == 0) {
                     dropdownMenu.clearFocus()
                 }
-                presenter.getWeatherForecast(selectedItem)
+                presenter.updateWeatherForecastByCity(selectedItem)
             }
         }
     }
 
-    override fun showData(data: WeatherForecast) {
-        with(binding) {
-            data.let {
+    override fun showResult(data: WeatherForecast?) {
+        if (data != null) {
+            with(binding) {
                 description.text = resources.getString(
                     R.string.description,
-                    it.weather.description,
+                    data.weather.description,
                 )
                 temperature.text = resources.getString(
                     R.string.temperature,
-                    it.main.temperature,
+                    data.main.temperature,
                 )
                 feelsLike.text = resources.getString(
                     R.string.feels_like,
-                    it.main.feelsLike,
+                    data.main.feelsLike,
                 )
                 temperatureMin.text = resources.getString(
                     R.string.temperature_min,
-                    it.main.temperatureMin,
+                    data.main.temperatureMin,
                 )
                 temperatureMax.text = resources.getString(
                     R.string.temperature_max,
-                    it.main.temperatureMax,
+                    data.main.temperatureMax,
                 )
             }
         }
