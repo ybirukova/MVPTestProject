@@ -1,18 +1,19 @@
 package com.example.mvptestproject.presentation
 
 import android.os.Bundle
-import android.widget.ArrayAdapter
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import androidx.core.view.isVisible
 import com.example.mvptestproject.R
-import com.example.mvptestproject.contract.MainView
-import com.example.mvptestproject.data.repositories.WeatherForecastRepositoryImpl
 import com.example.mvptestproject.databinding.ActivityMainBinding
 import com.example.mvptestproject.domain.models.WeatherForecast
+import com.example.mvptestproject.presentation.contract.MainView
+import com.example.mvptestproject.utils.NonFilterArrayAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import moxy.MvpAppCompatActivity
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
+import moxy.ktx.moxyPresenter
 import javax.inject.Inject
+import javax.inject.Provider
 
 @AndroidEntryPoint
 class MainActivity : MvpAppCompatActivity(), MainView {
@@ -20,15 +21,8 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     private lateinit var binding: ActivityMainBinding
 
     @Inject
-    lateinit var repositoryImpl: WeatherForecastRepositoryImpl
-
-    @InjectPresenter
-    lateinit var presenter: MainPresenterImpl
-
-    @ProvidePresenter
-    fun provideMainPresenter(): MainPresenterImpl {
-        return MainPresenterImpl(repositoryImpl)
-    }
+    lateinit var presenterProvider: Provider<MainPresenterImpl>
+    private val presenter by moxyPresenter { presenterProvider.get() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,27 +60,28 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     }
 
     override fun showResult(data: WeatherForecast?) {
-        if (data != null) {
-            with(binding) {
+        with(binding) {
+            data?.let {
+                llWeather.isVisible = true
                 description.text = resources.getString(
                     R.string.description,
-                    data.weather.description,
+                    it.weather.description,
                 )
                 temperature.text = resources.getString(
                     R.string.temperature,
-                    data.main.temperature,
+                    it.main.temperature,
                 )
                 feelsLike.text = resources.getString(
                     R.string.feels_like,
-                    data.main.feelsLike,
+                    it.main.feelsLike,
                 )
                 temperatureMin.text = resources.getString(
                     R.string.temperature_min,
-                    data.main.temperatureMin,
+                    it.main.temperatureMin,
                 )
                 temperatureMax.text = resources.getString(
                     R.string.temperature_max,
-                    data.main.temperatureMax,
+                    it.main.temperatureMax,
                 )
             }
         }
@@ -94,8 +89,15 @@ class MainActivity : MvpAppCompatActivity(), MainView {
 
     override fun showLoading(isLoading: Boolean) {
         with(binding) {
-            progressBar.isVisible = isLoading
-            llWeather.isVisible = !isLoading
+            llWeather.visibility = if (isLoading) INVISIBLE else VISIBLE
+            progressBar.visibility = if (isLoading) VISIBLE else INVISIBLE
+        }
+    }
+
+    override fun showError(isError: Boolean) {
+        with(binding) {
+            llWeather.visibility = if (isError) INVISIBLE else VISIBLE
+            errorText.visibility = if (isError) VISIBLE else INVISIBLE
         }
     }
 }

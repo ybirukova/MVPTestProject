@@ -1,4 +1,4 @@
-package com.example.mvptestproject.di
+package com.example.mvptestproject
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

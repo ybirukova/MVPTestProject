@@ -26,6 +26,18 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://api.openweathermap.org/data/2.5/\"",
+            )
+        }
+        debug {
+            buildConfigField(
+                "String",
+                "BASE_URL",
+                "\"https://api.openweathermap.org/data/2.5/\"",
+            )
         }
     }
     compileOptions {
@@ -36,6 +48,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
@@ -67,6 +80,7 @@ dependencies {
     implementation("com.github.moxy-community:moxy:2.2.2")
     kapt("com.github.moxy-community:moxy-compiler:2.2.2")
     implementation("com.github.moxy-community:moxy-androidx:2.2.2")
+    implementation("com.github.moxy-community:moxy-ktx:2.2.2")
 }
 
 kapt {
