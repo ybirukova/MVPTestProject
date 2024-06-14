@@ -7,6 +7,7 @@
     <string name="feels_like">Feels like: %s</string>
     <string name="temperature_min">Temperature min: %s</string>
     <string name="temperature_max">Temperature max: %s</string>
+    <string name="error">Error</string>
 
     <string-array name="cities">
         <item>Minsk</item>

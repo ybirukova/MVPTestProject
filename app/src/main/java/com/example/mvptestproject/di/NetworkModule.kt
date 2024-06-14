@@ -1,5 +1,6 @@
 package com.example.mvptestproject.di
 
+import com.example.mvptestproject.BuildConfig
 import com.example.mvptestproject.data.network.WeatherForecastService
 import dagger.Module
 import dagger.Provides
@@ -14,16 +15,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
 
-    companion object {
-        private const val baseUrl = "https://api.openweathermap.org/data/2.5/"
-    }
-
     @Provides
     fun getOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.HEADERS
+                    level = HttpLoggingInterceptor.Level.BODY
                 },
             )
             .build()
@@ -33,7 +30,7 @@ class NetworkModule {
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl(baseUrl)
+            .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

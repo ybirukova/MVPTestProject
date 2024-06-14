@@ -1,4 +1,4 @@
-package com.example.mvptestproject.contract
+package com.example.mvptestproject.presentation.contract
 
 import com.example.mvptestproject.domain.models.WeatherForecast
 import moxy.MvpView
@@ -15,4 +15,6 @@ interface MainView : MvpView {
     fun showResult(data: WeatherForecast?)
 
     fun showLoading(isLoading: Boolean)
+
+    fun showError(isError: Boolean)
 }

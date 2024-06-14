@@ -1,4 +1,4 @@
-package com.example.mvptestproject.contract
+package com.example.mvptestproject.presentation.contract
 
 interface MainPresenter {
 
