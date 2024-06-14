@@ -40,8 +40,8 @@ class MainActivity : MvpAppCompatActivity(), MainView {
     }
 
     override fun setUpUi() {
-        val cities = resources.getStringArray(R.array.cities)
-        val adapter = ArrayAdapter(this, R.layout.list_item, cities)
+        val cities = resources.getStringArray(R.array.cities).toList()
+        val adapter = NonFilterArrayAdapter(this, R.layout.list_item, cities)
         with(binding) {
             autoCompleteTxt.setAdapter(adapter)
             autoCompleteTxt.setOnDismissListener {
